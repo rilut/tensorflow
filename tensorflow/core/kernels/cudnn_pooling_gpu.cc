@@ -211,7 +211,9 @@ void DnnPooling3dGradOp<T>::Compute(
 }
 
 template class DnnPooling3dOp<float>;
+template class DnnPooling3dOp<Eigen::half>;
 template class DnnPooling3dGradOp<float>;
+template class DnnPooling3dGradOp<Eigen::half>;
 
 #endif  // GOOGLE_CUDA
 
