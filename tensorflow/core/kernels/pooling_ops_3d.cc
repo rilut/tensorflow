@@ -120,12 +120,20 @@ class Pooling3DOp : public UnaryOp<T> {
   std::vector<int32> stride_;
   Padding padding_;
 };
+
 REGISTER_KERNEL_BUILDER(
     Name("AvgPool3D").Device(DEVICE_CPU).TypeConstraint<float>("T"),
     Pooling3DOp<CPUDevice, float, AVG>);
 REGISTER_KERNEL_BUILDER(
+    Name("AvgPool3D").Device(DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
+    Pooling3DOp<CPUDevice, Eigen::half, AVG>);
+
+REGISTER_KERNEL_BUILDER(
     Name("MaxPool3D").Device(DEVICE_CPU).TypeConstraint<float>("T"),
     Pooling3DOp<CPUDevice, float, MAX>);
+REGISTER_KERNEL_BUILDER(
+    Name("MaxPool3D").Device(DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
+    Pooling3DOp<CPUDevice, Eigen::half, MAX>);
 
 template <typename Device, typename T>
 struct LaunchMaxPooling3dGradOp;
@@ -286,6 +294,9 @@ class MaxPooling3dGradOp : public OpKernel {
 REGISTER_KERNEL_BUILDER(
     Name("MaxPool3DGrad").Device(DEVICE_CPU).TypeConstraint<float>("T"),
     MaxPooling3dGradOp<CPUDevice, float>);
+REGISTER_KERNEL_BUILDER(
+    Name("MaxPool3DGrad").Device(DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
+    MaxPooling3dGradOp<CPUDevice, Eigen::half>);
 
 template <typename Device, typename T>
 struct LaunchAvgPooling3dGradOp;
@@ -433,6 +444,11 @@ REGISTER_KERNEL_BUILDER(Name("AvgPool3DGrad")
                             .TypeConstraint<float>("T")
                             .HostMemory("orig_input_shape"),
                         AvgPooling3dGradOp<CPUDevice, float>);
+REGISTER_KERNEL_BUILDER(Name("AvgPool3DGrad")
+                            .Device(DEVICE_CPU)
+                            .TypeConstraint<Eigen::half>("T")
+                            .HostMemory("orig_input_shape"),
+                        AvgPooling3dGradOp<CPUDevice, Eigen::half>);
 
 #if GOOGLE_CUDA
 
@@ -466,8 +482,15 @@ REGISTER_KERNEL_BUILDER(
     Name("AvgPool3D").Device(DEVICE_GPU).TypeConstraint<float>("T"),
     Pooling3DOp<GPUDevice, float, AVG>);
 REGISTER_KERNEL_BUILDER(
+    Name("AvgPool3D").Device(DEVICE_GPU).TypeConstraint<Eigen::half>("T"),
+    Pooling3DOp<GPUDevice, Eigen::half, AVG>);
+
+REGISTER_KERNEL_BUILDER(
     Name("MaxPool3D").Device(DEVICE_GPU).TypeConstraint<float>("T"),
     Pooling3DOp<GPUDevice, float, MAX>);
+REGISTER_KERNEL_BUILDER(
+    Name("MaxPool3D").Device(DEVICE_GPU).TypeConstraint<Eigen::half>("T"),
+    Pooling3DOp<GPUDevice, Eigen::half, MAX>);
 
 template <typename T>
 struct LaunchMaxPooling3dGradOp<GPUDevice, T> {
@@ -489,6 +512,9 @@ struct LaunchMaxPooling3dGradOp<GPUDevice, T> {
 REGISTER_KERNEL_BUILDER(
     Name("MaxPool3DGrad").Device(DEVICE_GPU).TypeConstraint<float>("T"),
     MaxPooling3dGradOp<GPUDevice, float>);
+REGISTER_KERNEL_BUILDER(
+    Name("MaxPool3DGrad").Device(DEVICE_GPU).TypeConstraint<Eigen::half>("T"),
+    MaxPooling3dGradOp<GPUDevice, Eigen::half>);
 
 template <typename T>
 struct LaunchAvgPooling3dGradOp<GPUDevice, T> {
@@ -510,6 +536,11 @@ REGISTER_KERNEL_BUILDER(Name("AvgPool3DGrad")
                             .TypeConstraint<float>("T")
                             .HostMemory("orig_input_shape"),
                         AvgPooling3dGradOp<GPUDevice, float>);
+REGISTER_KERNEL_BUILDER(Name("AvgPool3DGrad")
+                            .Device(DEVICE_GPU)
+                            .TypeConstraint<Eigen::half>("T")
+                            .HostMemory("orig_input_shape"),
+                        AvgPooling3dGradOp<GPUDevice, Eigen::half>);
 
 #endif  // GOOGLE_CUDA
 
