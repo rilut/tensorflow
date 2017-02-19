@@ -10327,12 +10327,12 @@ op {
   input_arg {
     name: "orig_input"
     description: "The original input tensor."
-    type: DT_FLOAT
+    type: T
   }
   input_arg {
     name: "orig_output"
     description: "The original output tensor."
-    type: DT_FLOAT
+    type: T
   }
   input_arg {
     name: "grad"
